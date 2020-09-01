@@ -149,7 +149,7 @@ function ngosRead8021QConfig ($input)
             case 5:
             list ( $vid,$VlanName, $UtPorts ,$tagPorts, $type) = $matches;
             error_log($vid);
-            $ret['vlanlist'][] = $vid;
+            $ret['vlanlist'][] = trim($vid);
         }
 
 	} 
