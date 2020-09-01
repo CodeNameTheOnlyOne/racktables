@@ -193,20 +193,7 @@ function ngosRead8021QConfig ($input)
 		}
 
 		
-		$matches = preg_split ("/\|/", trim ($line));
-        switch (count ($matches))
-        {
-            case 5:
-            list ( $vid,$VlanName, $UtPorts ,$tagPorts, $type) = $matches;
-            $vid=intval (trim($vid));
-			
-			$ret['vlannames'][] =array(
-				
-				$vid=>trim($VlanName)
-			);
-        }
 
-	} 
 	error_log(json_encode($ret));
 	return $ret;
 }
@@ -268,7 +255,7 @@ function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
 			break;
 		// query list
 		case 'get8021q':
-			$ret .='show vlan static';
+			$ret .='show run';
 			break;
 		case 'getcdpstatus':
 			$ret .= "show cdp neighbors detail\n";
