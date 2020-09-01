@@ -130,91 +130,7 @@ function ngosReadMacList ($input)
 
 function ngosRead8021QConfig ($input)
 {
-	$ret = constructRunning8021QConfig();
-	$ret['vlanlist'][] = VLAN_DFL_ID; // HP hides VLAN1 from config text
-	$matches = array();
-	$vlanlist = array();
-	$rawdata = explode ("Status and Counters - VLAN Information - for ports", $input);
-	array_shift ($rawdata);
-
-	foreach ($rawdata as $line)
-	{
-		$port = array
-		(
-			'port_id' => '',
-			'port_name' => '',
-			'vlan_data' => array(),
-			'port_mode' => FALSE,
-		);
-		$port_mode = '';
-		foreach (explode ("\n", $line) as $vlans)
-		{
-			if (preg_match ('/^ VLAN ID Name |^\s*-------/', $vlans))
-				continue;
-			if (preg_match ('/^((?:[0-9]+)|(?:[Tt]rk[0-9]+))$/', trim ($vlans), $matches))
-			{
-				$port['port_id'] = $matches[1];
-				continue;
-			}
-			if (preg_match ('/^\s+Port name: (.+)$/', $vlans, $matches))
-			{
-				$port['port_name'] = $matches[1];
-				continue;
-			}
-			if (preg_match ('/^\S*\s*(\d+)\s+(\S+)\s+\S+\s+\S+\s+([T]agged|[U]ntagged).*$/', $vlans, $matches))
-			{
-				$port['vlan_data'][$matches[1]]['vlan_name'] = $matches[2];
-				$port['vlan_data'][$matches[1]]['vlan_mode'] = $matches[3];
-				$vlanlist[] = $matches[1];
-			}
-		}
-		// Here we add parsed data into $ret array
-		$port_id = $port['port_id'];
-		$port_name = $port['port_name'];
-
-		// Port config
-		$ret['portconfig'][$port_id][] = array ('type' => 'line-header', 'line' => 'interface ' . $port_id);
-		if ($port_name != '')
-			$ret['portconfig'][$port_id][] = array ('type' => 'line-other', 'line' => 'name ' . $port_name);
-
-		// Port data
-		$allowed_vlans = array();
-		if (array_search ('Tagged', array_column ($port['vlan_data'], 'vlan_mode')) === FALSE)
-		{
-			$port_mode = 'access';
-			foreach ($port['vlan_data'] as $vid => $value)
-			{
-				$allowed_vlans[] = $vid;
-				$native = $vid;
-			}
-		}
-		else
-		{
-			$port_mode = 'trunk';
-			foreach ($port['vlan_data'] as $vid => $value)
-				if (preg_match ('/\d+/', $vid))
-					$allowed_vlans[] = $vid;
-			foreach ($port['vlan_data'] as $vid => $value)
-				if (preg_match ('/\d+/', $vid) && $value['vlan_mode'] === "Untagged")
-				{
-					$native = $vid;
-					break;
-				}
-				else
-					$native = 0;
-		}
-		$ret['portdata'][$port_id] = array ('mode' => $port_mode, 'allowed' => $allowed_vlans, 'native' => $native);
-
-		unset ($port);
-		unset ($allowed_vlans);
-	}
-	// Return de-duplicated and sorted list of vlans
-	$ret['vlanlist'] = array_merge ($ret['vlanlist'], array_keys (array_flip ($vlanlist)));
-	sort ($ret['vlanlist']);
-	unset ($vlanlist);
-	unset ($matches);
-	unset ($rawdata);
-	return $ret;
+	error_log($input);
 }
 
 function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
@@ -274,14 +190,7 @@ function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
 			break;
 		// query list
 		case 'get8021q':
-			$ret .=
-'show interface switchport | incl Name:|Switchport:
-! END OF SWITCHPORTS
-show run
-! END OF CONFIG
-show vlan
-! END OF VLAN LIST
-';
+			$ret .='show vlan';
 			break;
 		case 'getcdpstatus':
 			$ret .= "show cdp neighbors detail\n";
