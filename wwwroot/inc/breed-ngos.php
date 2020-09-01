@@ -152,6 +152,7 @@ function ngosRead8021QConfig ($input)
         }
 
 	} 
+	return $ret;
 }
 
 function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
