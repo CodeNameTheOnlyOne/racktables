@@ -13,7 +13,7 @@ function ngosReadLLDPStatus ($input)
 	$got_header = FALSE;
 	foreach (explode ("\n", $input) as $line)
 	{
-        error_log($line);
+        
 		if (preg_match ("/Device ID/", $line)){
             $got_header = TRUE;
             continue;
@@ -29,7 +29,7 @@ function ngosReadLLDPStatus ($input)
         {
             case 6:
             list ( $local_port,$remote_mac, $remote_port ,$remote_name, $caps, $ttl) = $matches;
-            error_log($local_port);
+            
             $ret[trim($local_port)][] = array
                 (
                     'device' => trim($remote_name),
@@ -95,12 +95,12 @@ function ngosReadInterfaceStatus ($text)
 
 function ngosReadMacList ($input)
 {
-    error_log($input);
+    
 	$ret = array();
 	$got_header = FALSE;
 	foreach (explode ("\n", $input) as $line)
 	{
-        error_log($line);
+        
 		if (preg_match ("/VID/", $line)){
             $got_header = TRUE;
             continue;
@@ -116,7 +116,7 @@ function ngosReadMacList ($input)
         {
             case 4:
             list ( $vid,$mac, $type ,$local_port) = $matches;
-            error_log($local_port);
+            
             $ret[trim($local_port)][] = array(
 				'mac' => trim($mac),
 				'vid' => trim($vid),
