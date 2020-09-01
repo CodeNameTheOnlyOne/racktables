@@ -130,8 +130,29 @@ function ngosReadMacList ($input)
 
 function ngosRead8021QConfig ($input)
 {
-	$myfile = fopen("testfile.txt", "w");
-	fwrite($myfile, $input);
+	$ret = constructRunning8021QConfig();
+	$ret['vlannames'][VLAN_DFL_ID] = '1';
+	#$myfile = fopen("testfile.txt", "w");
+	#fwrite($myfile, $input);
+	foreach (explode ("\n", $input) as $line)
+	{
+        
+		if (preg_match ("/VLAN Name/", $line)){
+            $got_header = TRUE;
+            continue;
+		}
+		if (!$got_header)
+		continue;
+		$matches = preg_split ("/\|/", trim ($line));
+        switch (count ($matches))
+        {
+            case 5:
+            list ( $vid,$VlanName, $UtPorts ,$tagPorts, $type) = $matches;
+            
+            $ret['vlanlist'][] = $vid;
+        }
+
+	} 
 }
 
 function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
@@ -191,7 +212,7 @@ function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
 			break;
 		// query list
 		case 'get8021q':
-			$ret .='show vlan';
+			$ret .='show vlan static';
 			break;
 		case 'getcdpstatus':
 			$ret .= "show cdp neighbors detail\n";
