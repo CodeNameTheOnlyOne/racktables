@@ -9,66 +9,28 @@
 function ngosReadLLDPStatus ($input)
 {
 	$ret = array();
+	$got_header = FALSE;
 	foreach (explode ("\n", $input) as $line)
 	{
-		$matches = array();
-		switch (TRUE)
-		{
-		case preg_match ('/^  Local Port.+:(.+)$/', $line, $matches):
-			if (trim ($matches[1]) == '')
-				$ret['current']['local_port'] = 'NULL';
-			else
-				$ret['current']['local_port'] = shortenIfName (trim ($matches[1]));
-			break;
-		case preg_match ('/^  PortId.+:(.+)$/', $line, $matches):
-			if (trim ($matches[1]) == '')
-				$ret['current']['remote_port'] = 'NULL';
-			else
-				$ret['current']['remote_port'] = trim ($matches[1]);
-			break;
-		case preg_match ('/^  SysName\s+:(.+)?$/', $line, $matches):
-			if (trim ($matches[1]) == '')
-				$ret['current']['sys_name'] = 'NULL';
-			else
-				$ret['current']['sys_name'] = trim ($matches[1]);
-			break;
-		case preg_match ('/^  PortDescr\s+:(.+)?$/', $line, $matches):
-			if (trim ($matches[1]) == '')
-			{
-				$ret['current']['sys_name'] = 'NULL';
-				break;
-			}
-			$ret['current']['port_descr'] = trim ($matches[1]);
-			if
+		if (preg_match ("/^Device ID/", $line))
+            $got_header = TRUE;
+            continue;
+
+		if (!$got_header)
+			continue;
+
+        $matches = preg_split ('\|', trim ($line));
+        list ( $local_port,$remote_mac, $remote_port ,$remote_name, $caps, $ttl) = $matches;
+        $ret[$local_port][] = array
 			(
-				array_key_exists ('current', $ret) &&
-				array_key_exists ('local_port', $ret['current']) &&
-				array_key_exists ('port_descr', $ret['current']) &&
-				array_key_exists ('sys_name', $ret['current']) &&
-				array_key_exists ('remote_port', $ret['current'])
-			)
-			{
-				$port = NULL;
-				if (preg_match ('/^[a-f0-9]{2} [a-f0-9]{2} [a-f0-9]{2} [a-f0-9]{2} [a-f0-9]{2} [a-f0-9]{2}$/', $ret['current']['remote_port']))
-					$port = $ret['current']['port_descr'];
-				else
-					$port = $ret['current']['remote_port'];
-				if (isset ($port))
-					$ret[$ret['current']['local_port']][] = array
-					(
-						'device' => $ret['current']['sys_name'],
-						'port' => $port,
-					);
-			}
-			unset ($ret['current']);
-			break;
-		default:
-		}
+				'device' => $remote_name,
+				'port' => $remote_port,
+			);
+
+
 	}
-	unset ($ret['current']);
 	return $ret;
 }
-
 function ngosReadInterfaceStatus ($text)
 {
 	$result = array();
