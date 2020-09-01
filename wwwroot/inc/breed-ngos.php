@@ -130,7 +130,8 @@ function ngosReadMacList ($input)
 
 function ngosRead8021QConfig ($input)
 {
-	error_log($input);
+	$myfile = fopen("testfile.txt", "w");
+	fwrite($myfile, $input);
 }
 
 function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
