@@ -180,7 +180,7 @@ function ngosRead8021QConfig ($input)
 								$vlanarray[]=$range;
 							}
 						}
-						$vlan=intval (trim($vlan);
+						$vlan=intval (trim($vlan));
 						$vlanarray[]=$vlan;
 					}
 					$ret['portdata'][$port_id][] = array ('mode' => 'access', 'allowed' =>$vlanarray);
