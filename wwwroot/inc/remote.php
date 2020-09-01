@@ -572,12 +572,14 @@ function queryTerminal ($object_id, $commands, $tolerate_remote_errors = TRUE)
 	if (! isset ($prompt))
 		$prompt = NULL;
 
+	if (! isset ($port))
+		$port = NULL;
 	// set the default settings before calling user-defined callback
 	$settings = array
 	(
 		'hostname' => $endpoints[0],
 		'protocol' => $protocol,
-		'port' => NULL,
+		'port' => $port,
 		'prompt' => $prompt,
 		'username' => NULL,
 		'password' => NULL,
