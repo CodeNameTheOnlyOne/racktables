@@ -142,7 +142,7 @@ function ngosRead8021QConfig ($input)
 		}
 		if (!$got_header)
 		continue;
-		error_log($line);
+		
 		$matches = preg_split ("/\|/", trim ($line));
         switch (count ($matches))
         {
@@ -157,6 +157,7 @@ function ngosRead8021QConfig ($input)
         }
 
 	} 
+	error_log($ret);
 	return $ret;
 }
 
