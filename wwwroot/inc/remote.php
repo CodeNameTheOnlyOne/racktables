@@ -548,12 +548,12 @@ function queryTerminal ($object_id, $commands, $tolerate_remote_errors = TRUE)
 			# Console emulator should be set to 'none' to avoid special characters to be sent by stupid default VT100!!!
 			$commands = "configure\nconsole local-terminal none\nexit\nno page\n" . $commands . "configure\nconsole local-terminal vt100\nend\nexit\nexit\ny\n";
 			break;
-			case 'NGOS':
-				$protocol = 'sshnokey';
-				$prompt = '(Login|[Uu]sername|[Pp]assword): $|Press any key to continue(\e\[\??\d+(;\d+)*[A-Za-z])*$|[#>].*$';
-				# Console emulator should be set to 'none' to avoid special characters to be sent by stupid default VT100!!!
-				$commands = "configure\nconsole local-terminal none\nexit\nno page\n" . $commands . "configure\nconsole local-terminal vt100\nend\nexit\nexit\ny\n";
-				break;
+		case 'NGOS':
+			$protocol = 'telnet';
+			$prompt = '(Login|[Uu]sername|[Pp]assword): $|Press any key to continue(\e\[\??\d+(;\d+)*[A-Za-z])*$|[#>].*$';
+			# Console emulator should be set to 'none' to avoid special characters to be sent by stupid default VT100!!!
+			$commands = "terminal length 0\n" . $commands;
+			break;
 							
 		case 'ios15':
 			$commands = "terminal length 0\nterminal no monitor\n" . $commands;
