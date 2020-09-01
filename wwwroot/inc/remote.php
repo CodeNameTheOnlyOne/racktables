@@ -137,6 +137,13 @@ $breedfunc = array
 	'ios15-getportmaclist-main'=> 'ios12ReadMacList',
 	'ios15-xlatepushq-main'    => 'ios15TranslatePushQueue',
 	'ios15-getallconf-main'    => 'ios12SpotConfigText',
+	'ngos-getlldpstatus-main' => 'hpprocurveN1178ReadLLDPStatus',
+	'ngos-get8021q-main'      => 'hpprocurveN1178Read8021QConfig',
+	'ngos-getportstatus-main' => 'hpprocurveN1178ReadInterfaceStatus',
+	'ngos-getmaclist-main'    => 'hpprocurveN1178ReadMacList',
+	'ngos-getportmaclist-main'=> 'hpprocurveN1178ReadMacList',
+	'ngos-xlatepushq-main'    => 'hpprocurveN1178TranslatePushQueue',
+	'ngos-getallconf-main'    => 'hpprocurveN1178SpotConfigText',
 );
 
 define ('MAX_GW_LOGSIZE', 1024*1024); // do not store more than 1 MB of log data
