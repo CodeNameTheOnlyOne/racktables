@@ -130,9 +130,8 @@ function ngosReadMacList ($input)
 
 function ngosRead8021QConfig ($input)
 {
-	
+	$got_header = FALSE;
 	$ret = constructRunning8021QConfig();
-	$ret['vlannames'][VLAN_DFL_ID] = '1';
 	foreach (explode ("\n", $input) as $line)
 	{
         
@@ -148,8 +147,8 @@ function ngosRead8021QConfig ($input)
         {
             case 5:
             list ( $vid,$VlanName, $UtPorts ,$tagPorts, $type) = $matches;
-            error_log($vid);
-            $ret['vlanlist'][] = trim($vid);
+            
+            $ret['vlanlist'][] = intval (trim($vid));
         }
 
 	} 
