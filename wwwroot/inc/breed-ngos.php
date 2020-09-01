@@ -132,17 +132,16 @@ function ngosRead8021QConfig ($input)
 {
 	$ret = constructRunning8021QConfig();
 	$ret['vlannames'][VLAN_DFL_ID] = '1';
-	#$myfile = fopen("testfile.txt", "w");
-	#fwrite($myfile, $input);
 	foreach (explode ("\n", $input) as $line)
 	{
         
-		if (preg_match ("/VLAN Name/", $line)){
+		if (preg_match ("/VID/", $line)){
             $got_header = TRUE;
             continue;
 		}
 		if (!$got_header)
 		continue;
+		error_log($line);
 		$matches = preg_split ("/\|/", trim ($line));
         switch (count ($matches))
         {
