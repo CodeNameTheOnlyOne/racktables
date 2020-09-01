@@ -14,8 +14,11 @@ function ngosReadLLDPStatus ($input)
 	foreach (explode ("\n", $input) as $line)
 	{
         error_log($line);
+        if (preg_match ("/-----------------/", $line))
+            continue;
 		if (preg_match ("/Device ID/", $line))
             $got_header = TRUE;
+            continue;
             
             
 
