@@ -130,18 +130,68 @@ function ngosReadMacList ($input)
 
 function ngosRead8021QConfig ($input)
 {
-	$got_header = FALSE;
+	$return_vlan = FALSE;
+	$return_if=false;
+	$port_id=0;
 	$ret = constructRunning8021QConfig();
-	$ret['vlanlist'][] = VLAN_DFL_ID;
+	$vid = 0;
 	foreach (explode ("\n", $input) as $line)
 	{
         
-		if (preg_match ("/VID/", $line)){
-            $got_header = TRUE;
+		if (preg_match ("/^vlan/", $line)){
+			$matches = preg_split ("/\s/", trim ($line));
+			list ($vlan,$vid) = $matches;
+			$vid=intval (trim($vid));
+			$ret['vlanlist'][] =$vid;
+			$return_vlan=true;
             continue;
 		}
-		if (!$got_header)
-		continue;
+		if($return_vlan){
+			$matches = preg_split ("/\s/", trim ($line));
+			list ($name,$vlanName) = $matches;
+			$ret['vlannames'][] =array(
+				
+				$vid=>trim($vlanName)
+			);
+			$return_vlan=false;
+			continue;
+		}
+		if (preg_match ("/^interface/", $line)){
+			$matches = preg_split ("/\s/", trim ($line));
+			list ($header,$portid) = $matches;
+			$portid=intval (trim($portid));
+			$ret['portconfig'][$port_id][] = array ('type' => 'line-header', 'line' => 'interface ' . $port_id);
+			$return_if=true;
+            continue;
+		}
+		if ($return_if){
+			if (preg_match ("/^!/", $line)){
+				$return_if = false;
+				continue;
+			}else{
+				if(preg_match ("/switchport/", $line)){
+					$matches = preg_split ("/\s/", trim ($line));
+					$vlans = preg_split ("/,/", trim ($matches[5]));
+					$vlanarray=array();
+					foreach($vlans as $vlan){
+						if(preg_match ("/-/", $vlan)){
+							$splitrange= preg_split ("/-/",$vlan);
+							foreach(range($splitrange[0],$splitrange[1]) as $range){
+								$vlanarray[]=$range;
+							}
+						}
+						$vlan=intval (trim($vlan);
+						$vlanarray[]=$vlan;
+					}
+					$ret['portdata'][$port_id][] = array ('mode' => 'access', 'allowed' =>$vlanarray);
+
+				}
+				else{
+				$ret['portconfig'][$port_id][] = array ('type' => 'line-other', 'line' => $line);
+			}
+		}
+		}
+
 		
 		$matches = preg_split ("/\|/", trim ($line));
         switch (count ($matches))
@@ -149,7 +199,7 @@ function ngosRead8021QConfig ($input)
             case 5:
             list ( $vid,$VlanName, $UtPorts ,$tagPorts, $type) = $matches;
             $vid=intval (trim($vid));
-			$ret['vlanlist'][] =$vid;
+			
 			$ret['vlannames'][] =array(
 				
 				$vid=>trim($VlanName)
