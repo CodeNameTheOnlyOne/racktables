@@ -3781,7 +3781,7 @@ $dictionary = array
 	3718 => array ('chapter_id' => 11, 'dict_value' => 'Dell PowerEdge%GPASS%R330'),
 	3719 => array ('chapter_id' => 11, 'dict_value' => 'Dell PowerEdge%GPASS%R740xd'),
 	3720 => array ('chapter_id' => 14, 'dict_value' => 'HP Procurve OS N.11.78'),
-	50001 => array ('chapter_id' => 14, 'dict_value' => 'NetgearOS'),
+
 	3721 => array ('chapter_id' => 12, 'dict_value' => '[[HP%GPASS%HP Aruba 2530 48 PoE+ Switch | https://www.hpe.com/us/en/product-catalog/networking/networking-switches/pip.specifications.aruba-2530-48-poeplus-switch.5384996.html]]'),
 	3722 => array ('chapter_id' => 12, 'dict_value' => '[[HP%GPASS%HP Aruba 2530 24 PoE+ Switch | https://www.hpe.com/uk/en/product-catalog/networking/networking-switches/pip.specifications.aruba-2530-24-poeplus-switch.5384999.html]]'),
 	3723 => array ('chapter_id' => 12, 'dict_value' => '[[HP%GPASS%HP 1950 48G 2SFP+ 2XGT Switch | https://www.hpe.com/us/en/product-catalog/networking/networking-switches/pip.specifications.hpe-officeconnect-1950-48g-2sfpplus-2xgt-poeplus-switch.6887601.html]]'),
@@ -3819,4 +3819,5 @@ $dictionary = array
 # dict_key code less than 50000). This is necessary to keep AUTO_INCREMENT
 # and dictionary updates working properly.
 	49999 => array ('chapter_id' => 13, 'dict_value' => '[[RH Fedora%GSKIP%Fedora 15 | http://docs.fedoraproject.org/release-notes/f15/en-US/html/]]'),
+	5001 => array ('chapter_id' => 14, 'dict_value' => 'NetgearOS'),
 );

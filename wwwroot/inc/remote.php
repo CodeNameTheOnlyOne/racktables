@@ -196,7 +196,7 @@ $breed_by_swcode = array
 	1759 => 'iosxr4', // Cisco IOS XR 4.2
 	1786 => 'ros11', // Marvell ROS 1.1
 	3720 => 'hpprocurveN1178',
-	50001 => 'NGOS', // NETGEAR 6.0
+	5001 => 'NGOS', // NETGEAR 6.0
 	//... linux items added by the loop below
 );
 
