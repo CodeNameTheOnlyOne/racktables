@@ -27,7 +27,7 @@ function ngosReadLLDPStatus ($input)
         
         $matches = preg_split ("/\|/", trim ($line));
         list ( $local_port,$remote_mac, $remote_port ,$remote_name, $caps, $ttl) = $matches;
-        
+        error_log($local_port);
         $ret[$local_port][] = array
 			(
 				'device' => $remote_name,
