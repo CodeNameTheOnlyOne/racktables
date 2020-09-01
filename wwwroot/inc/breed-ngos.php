@@ -130,7 +130,7 @@ function ngosReadMacList ($input)
 
 function ngosRead8021QConfig ($input)
 {
-	$myfile = fopen("testfile.txt", "w");
+	$myfile = fopen("/tmp/testfile.txt", "w");
 	fwrite($myfile, $input);
 }
 
