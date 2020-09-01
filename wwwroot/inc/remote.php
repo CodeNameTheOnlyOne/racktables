@@ -557,6 +557,7 @@ function queryTerminal ($object_id, $commands, $tolerate_remote_errors = TRUE)
 			break;
 		case 'ngos':
 			$protocol = 'telnet';
+			$port = "60000";
 			$prompt = '(Login|[Uu]sername|[Pp]assword): $|Press any key to continue(\e\[\??\d+(;\d+)*[A-Za-z])*$|[#>].*$';
 			# Console emulator should be set to 'none' to avoid special characters to be sent by stupid default VT100!!!
 			$commands = "terminal length 0\n" . $commands;
