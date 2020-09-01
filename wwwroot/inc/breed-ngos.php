@@ -28,7 +28,7 @@ function ngosReadLLDPStatus ($input)
         switch (count ($matches))
         {
             case 6:
-            list ( $local_port,$remote_port, $remote_mac ,$remote_name, $caps, $ttl) = $matches;
+            list ( $local_port,$remote_mac, $remote_port ,$remote_name, $caps, $ttl) = $matches;
             error_log($local_port);
             $ret[trim($local_port)][] = array
                 (
