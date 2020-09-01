@@ -192,8 +192,8 @@ function ngosRead8021QConfig ($input)
 		}
 		}
 
-		
 
+	} 
 	error_log(json_encode($ret));
 	return $ret;
 }
@@ -255,7 +255,7 @@ function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
 			break;
 		// query list
 		case 'get8021q':
-			$ret .='show run';
+			$ret .='show vlan static';
 			break;
 		case 'getcdpstatus':
 			$ret .= "show cdp neighbors detail\n";
