@@ -95,47 +95,37 @@ function ngosReadInterfaceStatus ($text)
 
 function ngosReadMacList ($text)
 {
-	$result = array();
-	$state = 'headerSearch';
-	foreach (explode ("\n", $text) as $line)
+    
+	$ret = array();
+	$got_header = FALSE;
+	foreach (explode ("\n", $input) as $line)
 	{
-		switch ($state)
-		{
-		case 'headerSearch':
-			if (preg_match ('/\s?MAC Address\s+Located on Port\s?/', $line))
-				$state = 'readPort_all';
-			elseif (preg_match ('/^\s*Status and Counters -\s*Port Address Table -\s*([0-9]+)$/', $line, $portdata))
-			{
-				$state = 'readPort_single';
-				$portname = $portdata[1];
-			}
-			break;
-		case 'readPort_all':
-			if (! preg_match ('/^\s*([a-f0-9]{6}\-[a-f0-9]{6})\s*(\S+)$/', trim ($line), $matches))
-				break;
-			$portname = shortenIfName ($matches[2]);
-			$vid = NULL;
-			$result[$portname][] = array
-			(
-				'mac' => implode (":", str_split (str_replace ('-', '', $matches[1]), 2)),
-				'vid' => '',
+        error_log($line);
+		if (preg_match ("/VID/", $line)){
+            $got_header = TRUE;
+            continue;
+        }    
+            
+            
+
+		if (!$got_header)
+            continue;
+        
+        $matches = preg_split ("/\|/", trim ($line));
+        switch (count ($matches))
+        {
+            case 4:
+            list ( $vid,$mac, $type ,$local_port) = $matches;
+            error_log($local_port);
+            $ret[trim($local_port)][] = array(
+				'mac' => trim($mac),
+				'vid' => trim($vid),
 			);
-			break;
-		case 'readPort_single':
-			if (! preg_match ('/^\s*([a-f0-9]{6}\-[a-f0-9]{6})\s*$/', trim ($line), $matches))
-				break;
-			$vid = NULL;
-			$result[$portname][] = array
-			(
-				'mac' => implode (":", str_split (str_replace ('-', '', $matches[1]), 2)),
-				'vid' => '',
-			);
-			break;
-		}
+        }
+
+
 	}
-	foreach ($result as $portname => &$maclist)
-		sort ($maclist);
-	return $result;
+	return $ret;
 }
 
 function ngosRead8021QConfig ($input)
