@@ -93,7 +93,7 @@ function ngosReadInterfaceStatus ($text)
 	return $result;
 }
 
-function ngosReadMacList ($text)
+function ngosReadMacList ($input)
 {
     
 	$ret = array();
