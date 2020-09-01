@@ -13,10 +13,10 @@ function ngosReadLLDPStatus ($input)
 	$got_header = FALSE;
 	foreach (explode ("\n", $input) as $line)
 	{
-        error_log($line);
+        
 		if (preg_match ("/Device ID/", $line))
             $got_header = TRUE;
-            continue;
+            
             
 
 		if (!$got_header)
@@ -24,7 +24,7 @@ function ngosReadLLDPStatus ($input)
 
         $matches = preg_split ('\|', trim ($line));
         list ( $local_port,$remote_mac, $remote_port ,$remote_name, $caps, $ttl) = $matches;
-        
+        error_log($local_port);
         $ret[$local_port][] = array
 			(
 				'device' => $remote_name,
