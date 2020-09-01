@@ -3814,10 +3814,10 @@ $dictionary = array
 	3750 => array ('chapter_id' => 12, 'dict_value' => 'NETGEAR%GPASS%GS728TPPv2'),
 	3751 => array ('chapter_id' => 12, 'dict_value' => 'NETGEAR%GPASS%GS752TPv2'),
 	3752 => array ('chapter_id' => 12, 'dict_value' => 'NETGEAR%GPASS%GS752TPP'),
-
+	5001 => array ('chapter_id' => 14, 'dict_value' => 'NetgearOS'),
 # Any new "default" dictionary records must go above this line (i.e., with
 # dict_key code less than 50000). This is necessary to keep AUTO_INCREMENT
 # and dictionary updates working properly.
 	49999 => array ('chapter_id' => 13, 'dict_value' => '[[RH Fedora%GSKIP%Fedora 15 | http://docs.fedoraproject.org/release-notes/f15/en-US/html/]]'),
-	5001 => array ('chapter_id' => 14, 'dict_value' => 'NetgearOS'),
+	
 );
