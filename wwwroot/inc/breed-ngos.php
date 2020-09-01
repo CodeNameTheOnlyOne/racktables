@@ -8,7 +8,7 @@
 
 function ngosReadLLDPStatus ($input)
 {
-    
+    error_log($input);
 	$ret = array();
 	$got_header = FALSE;
 	foreach (explode ("\n", $input) as $line)
