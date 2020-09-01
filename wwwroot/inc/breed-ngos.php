@@ -264,10 +264,6 @@ function ngosRead8021QConfig ($input)
 function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
 {
 	$ret = '';
-	$rem_allowed_data = array();
-	$rem_tagged_data = array();
-	$unset_access_data = array();
-
 	foreach ($queue as $cmd)
 		switch ($cmd['opcode'])
 		{
@@ -278,112 +274,83 @@ function ngosTranslatePushQueue ($dummy_object_id, $queue, $dummy_vlan_names)
 			$ret .= "no vlan ${cmd['arg1']}\n";
 			break;
 		case 'add allowed':
-			foreach ($cmd['vlans'] as $vlan_id)
-				$ret .= "vlan ${vlan_id} tagged ${cmd['port']}\n";
-			///////////////////////////////////////////////////////////////////////////////////////
-			// Here is a workaround: remove untagged port for case access->trunk(non-native)
-			if
-			(
-				array_key_exists ('port_id', $unset_access_data) &&
-				array_key_exists ('vlan_id', $unset_access_data) &&
-				$unset_access_data['port_id'] === $cmd['port']
-			)
-			{
-				$ret .= "no vlan ${unset_access_data['vlan_id']} untagged ${unset_access_data['port_id']}\n";
-				unset ($unset_access_data);
-			}
-			///////////////////////////////////////////////////////////////////////////////////////
-			// Here is a workaround: remove port tagged from vlans again for case trunk(non-native)->trunk(non-native)
-			if ($rem_tagged_data)
-				foreach ($rem_tagged_data as $port_id => $vlan_list)
-					if (! empty ($port_id) && $port_id === $cmd['port'])
-						foreach ($vlan_list as $key => $vlan_id)
-							if (isset ($vlan_id))
-								$ret .= "no vlan ${vlan_id} tagged ${port_id}\n";
-			$rem_tagged_data = array();
-			break;
 		case 'rem allowed':
-			foreach ($cmd['vlans'] as $vlan_id)
-			{
-				$ret .= "no vlan ${vlan_id} tagged ${cmd['port']}\n";
-				///////////////////////////////////////////////////////////////////////////////////////
-				// Here is a workaround: we should remove untagged port before
-				// add it as tagged for case access->trunk(non-native)
-				// HP L2 switches doesn't allow "orphaned" ports (without tags)
-				$rem_allowed_data[$cmd['port']][] = $vlan_id;
-				$rem_tagged_data[$cmd['port']][] = $vlan_id;
-			}
-			break;
-		case 'set access':
-			$ret .= "vlan ${cmd['arg2']} untagged ${cmd['arg1']}\n";
-			///////////////////////////////////////////////////////////////////////////////////////
-			// Now remove tagged port for case trunk(non-native)->access
-			//file_put_contents ('/var/log/racktables.log', var_export($rem_allowed_data, true), FILE_APPEND | LOCK_EX);
-			foreach ($rem_allowed_data as $port_id => $vlan_list)
-				if (! empty ($port_id) && $port_id === $cmd['arg1'] )
-					foreach ($vlan_list as $key => $vlan_id)
-						if (isset ($vlan_id))
-							$ret .= "no vlan ${vlan_id} tagged ${cmd['arg1']}\n";
-			$rem_allowed_data = array();
-			break;
-		case 'unset access':
-			///////////////////////////////////////////////////////////////////////////////////////
-			// Here is a workaround: we should remove untagged port before we
-			// add it as tagged, for case access->trunk(non-native)
-			// HP L2 switches doesn't allow "orphaned" ports (without tags)
-			$unset_access_data['port_id'] = $cmd['arg1'];
-			$unset_access_data['vlan_id'] = $cmd['arg2'];
-			$ret .= "no vlan ${cmd['arg2']} untagged ${cmd['arg1']}\n";
+			$clause = $cmd['opcode'] == 'add allowed' ? 'add' : 'remove';
+			$ret .= "interface ${cmd['port']}\n";
+			foreach (listToRanges ($cmd['vlans']) as $range)
+				$ret .= "switchport trunk allowed vlan ${clause} " .
+					($range['from'] == $range['to'] ? $range['to'] : "${range['from']}-${range['to']}") .
+					"\n";
+			$ret .= "exit\n";
 			break;
 		case 'set native':
-			$ret .= "vlan ${cmd['arg2']} untagged ${cmd['arg1']}\n";
-			///////////////////////////////////////////////////////////////////////////////////////
-			// Here is a workaround: we should add tagged port again for case
-			// when we remove native but keep it as tagged
-			$ret .= "no vlan ${cmd['arg2']} tagged ${cmd['arg1']}\n";
+			$ret .= "interface ${cmd['arg1']}\nswitchport trunk native vlan ${cmd['arg2']}\nexit\n";
 			break;
-		case 'unset native': // NOP
-			$ret .= "no vlan ${cmd['arg2']} untagged ${cmd['arg1']}\n";
-			$ret .= "vlan ${cmd['arg2']} tagged ${cmd['arg1']}\n";
+		case 'unset native':
+			$ret .= "interface ${cmd['arg1']}\nno switchport trunk native vlan ${cmd['arg2']}\nexit\n";
 			break;
-		case 'set mode': // NOP
+		case 'set access':
+			$ret .= "interface ${cmd['arg1']}\nswitchport access vlan ${cmd['arg2']}\nexit\n";
+			break;
+		case 'unset access':
+			$ret .= "interface ${cmd['arg1']}\nno switchport access vlan\nexit\n";
+			break;
+		case 'set mode':
+			$ret .= "interface ${cmd['arg1']}\n";
+			if ($cmd['arg2'] == 'trunk')
+				$ret .= "switchport trunk encapsulation dot1q\n";
+			$ret .= "switchport mode ${cmd['arg2']}\n";
+			if ($cmd['arg2'] == 'trunk')
+				$ret .= "no switchport trunk native vlan\nswitchport trunk allowed vlan none\n";
+			$ret .= "exit\n";
 			break;
 		case 'begin configuration':
-			$ret .= "configure\n";
+			$ret .= "configure terminal\n";
 			break;
 		case 'end configuration':
 			$ret .= "end\n";
 			break;
 		case 'save configuration':
-			$ret .= "write memory\n";
+			$ret .= "copy running-config startup-config\n\n";
 			break;
 		case 'cite':
 			$ret .= $cmd['arg1'];
 			break;
 		// query list
 		case 'get8021q':
-			$ret .= "show vlans ports ethernet all detail\n";
+			$ret .=
+'show interface switchport | incl Name:|Switchport:
+! END OF SWITCHPORTS
+show run
+! END OF CONFIG
+show vlan
+! END OF VLAN LIST
+';
+			break;
+		case 'getcdpstatus':
+			$ret .= "show cdp neighbors detail\n";
 			break;
 		case 'getlldpstatus':
-			$ret .= "show lldp info remote-device all\n";
+			$ret .= "show lldp neighbors\n";
+			break;
+		case 'getportstatus':
+			$ret .= "show int status\n";
+			break;
+		case 'getmaclist':
+			$ret .= "show mac address-table dynamic\n";
+			break;
+		case 'getportmaclist':
+			$ret .= "show mac address-table dynamic interface {$cmd['arg1']}\n";
 			break;
 		case 'getallconf':
 			$ret .= "show running-config\n";
-			break;
-		case 'getportstatus':
-			$ret .= "show int brief\n";
-			break;
-		case 'getmaclist':
-			$ret .= "show mac-address\n";
-			break;
-		case 'getportmaclist':
-			$ret .= "show mac-address ethernet {$cmd['arg1']}\n";
 			break;
 		default:
 			throw new InvalidArgException ('opcode', $cmd['opcode']);
 		}
 	return $ret;
 }
+
 
 function ngosSpotConfigText ($input)
 {
