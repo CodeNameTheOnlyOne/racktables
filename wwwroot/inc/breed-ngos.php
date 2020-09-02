@@ -180,6 +180,7 @@ function ngosTranslatePushQueue($dummy_object_id, $queue, $dummy_vlan_names)
 	
 	$ret = '';
 	foreach ($queue as $cmd)
+		error_log($cmd['opcode']);
 		switch ($cmd['opcode']) {
 			case 'create VLAN':
 				$ret .= "vlan ${cmd['arg1']}\nexit\n";
