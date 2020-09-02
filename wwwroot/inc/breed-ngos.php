@@ -126,7 +126,7 @@ function ngosRead8021QConfig($input)
 	$ret['vlanlist'][] = VLAN_DFL_ID;
 	foreach (explode("\n", $input) as $line) {
 
-		if (preg_match("/^vlan/", $line) && !$vlan_done) {
+		if (preg_match("/^vlan \d+/", $line) && !$vlan_done) {
 			$matches = preg_split("/\s/", trim($line));
 			list($vlan, $vid) = $matches;
 			$vid = intval(trim($vid));
@@ -186,7 +186,10 @@ function ngosRead8021QConfig($input)
 			}
 		}
 	}
+	array_unshift($ret['portdata'],"");
+	unset ($ret['portdata'][0]);
 	xdebug_break();
+
 	return $ret;
 }
 
