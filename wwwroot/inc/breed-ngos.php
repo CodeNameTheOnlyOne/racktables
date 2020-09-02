@@ -40,46 +40,19 @@ function ngosReadInterfaceStatus($text)
 {
 	$result = array();
 	$state = 'headerSearch';
+	$port_id=null;
 	foreach (explode("\n", $text) as $line) {
-		switch ($state) {
-			case 'headerSearch':
-				if (preg_match('/\s?Port\s+Type\s+/', $line)) {
-					$name_field_borders = getColumnCoordinates($line, 'Port');
-					if (isset($name_field_borders['from']))
-						$state = 'readPort';
-				}
-				break;
-			case 'readPort':
-				if (preg_match('/^[0-9]+/', trim(substr($line, 0, $name_field_borders['length'])), $matches))
-					$portname = $matches[0];
-				if (!isset($portname))
-					$portname = NULL;
-				if (preg_match('/^[0-9]+.+/', trim(substr($line, $name_field_borders['from'] + $name_field_borders['length'] + 1)), $matches))
-					$rest = $matches[0];
-				if (!isset($rest))
-					$rest = NULL;
+		switch(true){
+			case (preg_match("/GigabitEthernet/", $line)):
+				$port_id=preg_replace('/(\d+)|\D+/m','$1',$line);
+				
+				
+				
 
-				$field_list = preg_split('/\s+/', $rest);
-				if (count($field_list) < 4)
-					break;
-				list($type, $delim, $alert, $adm_status, $status_raw, $mode) = $field_list;
-				if ($status_raw == 'Up')
-					$status = 'up';
-				elseif ($status_raw == 'Down')
-					$status = 'down';
-				elseif ($adm_status == 'No')
-					$status = 'disabled';
-				if (preg_match('/([01]+)/', $mode, $matches))
-					$speed = $matches[0];
-				if (preg_match('/([a-zA-Z]+)/', $mode, $matches))
-					$duplex = $matches[0];
-				$result[$portname] = array(
-					'status' => $status,
-					'speed' => $speed,
-					'duplex' => $duplex,
-				);
-				break;
+
+			break;
 		}
+
 	}
 	return $result;
 }
@@ -147,9 +120,9 @@ function ngosRead8021QConfig($input)
 		}
 		
 		if (preg_match("/^interface/", $line)) {
-			$matches = preg_split("/\sg/", trim($line));
+			$matches = preg_split("/\s/", trim($line));
 			list($header, $port_id) = $matches;
-			$port_id = intval(trim($port_id));
+			$port_id = trim($port_id);
 			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'interface ' . $port_id);
 			$return_if = true;
 			continue;
@@ -269,7 +242,7 @@ function ngosTranslatePushQueue($dummy_object_id, $queue, $dummy_vlan_names)
 				$ret .= "show lldp neighbor\n";
 				break;
 			case 'getportstatus':
-				$ret .= "show int status\n";
+				$ret .= "show interfaces GigabitEthernet 1-28\n";
 				break;
 			case 'getmaclist':
 				$ret .= "show mac address-table dynamic\n";
