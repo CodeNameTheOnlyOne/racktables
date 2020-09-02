@@ -124,6 +124,7 @@ function ngosRead8021QConfig($input)
 	$ret = constructRunning8021QConfig();
 	$vid = 0;
 	$ret['vlanlist'][] = VLAN_DFL_ID;
+	$port_id=0;
 	foreach (explode("\n", $input) as $line) {
 
 		if (preg_match("/^vlan \d+/", $line) && !$vlan_done) {
@@ -145,7 +146,7 @@ function ngosRead8021QConfig($input)
 			$return_vlan = false;
 			continue;
 		}
-		$port_id=0;
+		
 		if (preg_match("/^interface/", $line)) {
 			$matches = preg_split("/\s/", trim($line));
 			list($header, $port_id) = $matches;
