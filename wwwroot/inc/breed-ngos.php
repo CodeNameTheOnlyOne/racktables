@@ -147,8 +147,8 @@ function ngosRead8021QConfig($input)
 
 		if (preg_match("/^interface/", $line)) {
 			$matches = preg_split("/\s/", trim($line));
-			list($header, $portid) = $matches;
-			$portid = intval(trim($portid));
+			list($header, $port_id) = $matches;
+			$port_id = intval(trim($port_id));
 			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'interface ' . $port_id);
 			$return_if = true;
 			continue;
