@@ -237,7 +237,7 @@ function ngosTranslatePushQueue($dummy_object_id, $queue, $dummy_vlan_names)
 				break;
 				// query list
 			case 'get8021q':
-				$ret .= 'show vlan static';
+				$ret .= 'show run';
 				break;
 			case 'getcdpstatus':
 				$ret .= "show cdp neighbors detail\n";
