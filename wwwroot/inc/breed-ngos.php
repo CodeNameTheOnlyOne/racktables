@@ -118,13 +118,14 @@ function ngosReadMacList($input)
 function ngosRead8021QConfig($input)
 {
 	$return_vlan = FALSE;
+	$vlan_done=false;
 	$return_if = false;
 	$port_id = 0;
 	$ret = constructRunning8021QConfig();
 	$vid = 0;
 	foreach (explode("\n", $input) as $line) {
 
-		if (preg_match("/^vlan/", $line)) {
+		if (preg_match("/^vlan/", $line) && !$vlan_done) {
 			$matches = preg_split("/\s/", trim($line));
 			list($vlan, $vid) = $matches;
 			$vid = intval(trim($vid));
