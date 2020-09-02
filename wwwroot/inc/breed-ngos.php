@@ -145,7 +145,7 @@ function ngosRead8021QConfig($input)
 			$return_vlan = false;
 			continue;
 		}
-
+		$port_id=0;
 		if (preg_match("/^interface/", $line)) {
 			$matches = preg_split("/\s/", trim($line));
 			list($header, $port_id) = $matches;
