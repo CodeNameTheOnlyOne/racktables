@@ -47,7 +47,7 @@ function ngosReadInterfaceStatus($text)
 				$port_id=preg_replace('/(\d+)|\D+/m','$1',$line);
 				$match =preg_split("/\s/", trim($line));
 				
-				$result[$port_id]=array ('status' => $match[2]);
+				$result['g'.$port_id]=array ('status' => $match[2]);
 			break;
 
 		}
