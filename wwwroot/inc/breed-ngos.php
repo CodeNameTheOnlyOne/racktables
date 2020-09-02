@@ -152,7 +152,6 @@ function ngosRead8021QConfig($input)
 			$port_id = intval(trim($port_id));
 			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'interface ' . $port_id);
 			$return_if = true;
-			xdebug_break();
 			continue;
 		}
 		if ($return_if) {
@@ -186,8 +185,7 @@ function ngosRead8021QConfig($input)
 			}
 		}
 	}
-	array_unshift($ret['portdata'],"");
-	unset ($ret['portdata'][0]);
+
 	xdebug_break();
 
 	return $ret;
