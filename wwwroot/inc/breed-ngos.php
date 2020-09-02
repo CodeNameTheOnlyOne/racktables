@@ -159,6 +159,7 @@ function ngosRead8021QConfig($input)
 				continue;
 			} else {
 				if (preg_match("/switchport/", $line)) {
+					xdebug_break();
 					switch (true) {
 						case preg_match("/hybrid/", $line):
 							$matches = preg_split("/\s/", trim($line));
