@@ -43,7 +43,7 @@ function ngosReadInterfaceStatus($text)
 	$port_id=null;
 	foreach (explode("\n", $text) as $line) {
 		switch(true){
-			case (preg_match("/GigabitEthernet/", $line)):
+			case (preg_match("/GigabitEthernet\d+/", $line)):
 				$port_id=preg_replace('/(\d+)|\D+/m','$1',$line);
 				$match =preg_split("/\s/", trim($line));
 				
