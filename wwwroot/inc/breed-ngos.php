@@ -177,7 +177,7 @@ function ngosRead8021QConfig($input)
 			}
 		}
 	}
-	error_log(json_encode($ret));
+	xdebug_break();
 	return $ret;
 }
 
