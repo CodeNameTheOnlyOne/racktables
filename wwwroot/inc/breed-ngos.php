@@ -122,7 +122,7 @@ function ngosRead8021QConfig($input)
 			$matches = preg_split("/\s/", trim($line));
 			list($header, $port_id) = $matches;
 			$port_id = trim($port_id);
-			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'g ' . $port_id);
+			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' =>  $port_id);
 			$return_if = true;
 			
 			continue;

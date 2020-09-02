@@ -4479,7 +4479,7 @@ function exec8021QDeploy ($object_id, $do_push)
 		setVLANSwitchError ($object_id, E_8021Q_PULL_REMOTE_ERROR);
 		throw $e;
 	}
-	xdebug_break();
+	
 	global $dbxlink;
 	$dbxlink->beginTransaction();
 	$vswitch = getVLANSwitchInfo ($object_id, 'FOR UPDATE');
