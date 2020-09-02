@@ -123,6 +123,7 @@ function ngosRead8021QConfig($input)
 	$port_id = 0;
 	$ret = constructRunning8021QConfig();
 	$vid = 0;
+	$ret['vlanlist'][] = VLAN_DFL_ID;
 	foreach (explode("\n", $input) as $line) {
 
 		if (preg_match("/^vlan/", $line) && !$vlan_done) {
