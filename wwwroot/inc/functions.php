@@ -4463,6 +4463,7 @@ function get8021QSyncOptions
 // return number of records updated successfully of FALSE, if a conflict was in the way
 function exec8021QDeploy ($object_id, $do_push)
 {
+	xdebug_break();
 	$nsaved = $npushed = $nsaved_uplinks = 0;
 	if (NULL === $vswitch = getVLANSwitchInfo ($object_id))
 		throw new InvalidArgException ('object_id', $object_id, 'VLAN domain is not set for this object');
