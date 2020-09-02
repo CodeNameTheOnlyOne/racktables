@@ -118,7 +118,7 @@ function ngosReadMacList($input)
 function ngosRead8021QConfig($input)
 {
 	$return_vlan = FALSE;
-	$vlan_done=false;
+	$vlan_done = false;
 	$return_if = false;
 	$port_id = 0;
 	$ret = constructRunning8021QConfig();
@@ -134,7 +134,7 @@ function ngosRead8021QConfig($input)
 			continue;
 		}
 		if ($return_vlan) {
-			if (preg_match("/^!/", $line))continue;
+			if (preg_match("/^!/", $line)) continue;
 			$matches = preg_split("/\s/", trim($line));
 			list($name, $vlanName) = $matches;
 			$ret['vlannames'][] = array(
@@ -159,20 +159,25 @@ function ngosRead8021QConfig($input)
 				continue;
 			} else {
 				if (preg_match("/switchport/", $line)) {
-					$matches = preg_split("/\s/", trim($line));
-					$vlans = preg_split("/,/", trim($matches[5]));
-					$vlanarray = array();
-					foreach ($vlans as $vlan) {
-						if (preg_match("/-/", $vlan)) {
-							$splitrange = preg_split("/-/", $vlan);
-							foreach (range($splitrange[0], $splitrange[1]) as $range) {
-								$vlanarray[] = $range;
+					switch (true) {
+						case preg_match("/hybrid/", $line):
+							$matches = preg_split("/\s/", trim($line));
+							$vlans = preg_split("/,/", trim($matches[5]));
+							$vlanarray = array();
+							foreach ($vlans as $vlan) {
+								if (preg_match("/-/", $vlan)) {
+									$splitrange = preg_split("/-/", $vlan);
+									foreach (range($splitrange[0], $splitrange[1]) as $range) {
+										$vlanarray[] = $range;
+									}
+								}
+								$vlan = intval(trim($vlan));
+								$vlanarray[] = $vlan;
 							}
-						}
-						$vlan = intval(trim($vlan));
-						$vlanarray[] = $vlan;
+							$ret['portdata'][$port_id][] = array('mode' => 'access', 'allowed' => $vlanarray);
+							break;
+						default:
 					}
-					$ret['portdata'][$port_id][] = array('mode' => 'access', 'allowed' => $vlanarray);
 				} else {
 					$ret['portconfig'][$port_id][] = array('type' => 'line-other', 'line' => $line);
 				}
