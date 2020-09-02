@@ -172,7 +172,7 @@ function ngosRead8021QConfig($input)
 		}
 	}
 
-
+	xdebug_break();
 	return $ret;
 }
 
