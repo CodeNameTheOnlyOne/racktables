@@ -155,6 +155,7 @@ function ngosRead8021QConfig($input)
 			continue;
 		}
 		if ($return_if) {
+			$ret['portconfig'][$port_id][] = array('type' => 'line', 'line' => $line);
 			if (preg_match("/^!/", $line)) {
 				$return_if = false;
 				continue;
@@ -183,7 +184,7 @@ function ngosRead8021QConfig($input)
 							$ret['portdata'][$port_id] = array('mode' => $matches[6], 'allowed' => $vlanarray);
 						break;
 							case preg_match("/pvid/", $line):
-								
+
 
 
 						break;
@@ -191,7 +192,7 @@ function ngosRead8021QConfig($input)
 						default:
 					}
 				} else {
-					$ret['portconfig'][$port_id] = array('type' => 'line-other', 'line' => $line);
+					
 				}
 			}
 		}
