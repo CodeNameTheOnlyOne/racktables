@@ -199,13 +199,13 @@ function ngosRead8021QConfig($input)
 		}
 	}
 
-	xdebug_break();
 
 	return $ret;
 }
 
 function ngosTranslatePushQueue($dummy_object_id, $queue, $dummy_vlan_names)
 {
+	xdebug_break();
 	$ret = '';
 	foreach ($queue as $cmd)
 		switch ($cmd['opcode']) {
