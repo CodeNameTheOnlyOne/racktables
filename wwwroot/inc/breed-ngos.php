@@ -120,7 +120,6 @@ function ngosRead8021QConfig($input)
 	$return_vlan = FALSE;
 	$vlan_done = false;
 	$return_if = false;
-	$port_id = 0;
 	$ret = constructRunning8021QConfig();
 	$vid = 0;
 	$ret['vlanlist'][] = VLAN_DFL_ID;
@@ -153,6 +152,7 @@ function ngosRead8021QConfig($input)
 			$port_id = intval(trim($port_id));
 			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'interface ' . $port_id);
 			$return_if = true;
+			xdebug_break();
 			continue;
 		}
 		if ($return_if) {
