@@ -163,6 +163,11 @@ function ngosRead8021QConfig($input)
 					switch (true) {
 						case preg_match("/hybrid/", $line):
 							$matches = preg_split("/\s/", trim($line));
+							if($matches[6]=="tagged" && false )
+								$mode="trunk";
+								else {
+									$mode ="";
+								}
 							$vlans = preg_split("/,/", trim($matches[5]));
 							$vlanarray = array();
 							foreach ($vlans as $vlan) {
@@ -175,8 +180,14 @@ function ngosRead8021QConfig($input)
 								$vlan = intval(trim($vlan));
 								$vlanarray[] = $vlan;
 							}
-							$ret['portdata'][$port_id] = array('mode' => 'access', 'allowed' => $vlanarray);
-							break;
+							$ret['portdata'][$port_id] = array('mode' => $matches[6], 'allowed' => $vlanarray);
+						break;
+							case preg_match("/pvid/", $line):
+								
+
+
+						break;
+
 						default:
 					}
 				} else {
