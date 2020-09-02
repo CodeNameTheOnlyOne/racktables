@@ -122,12 +122,13 @@ function ngosRead8021QConfig($input)
 			$matches = preg_split("/\s/", trim($line));
 			list($header, $port_id) = $matches;
 			$port_id = trim($port_id);
-			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'interface ' . $port_id);
+			$ret['portconfig'][$port_id][] = array('type' => 'line-header', 'line' => 'g ' . $port_id);
 			$return_if = true;
+			
 			continue;
 		}
 		if ($return_if) {
-			$ret['portconfig'][$port_id][] = array('type' => 'line', 'line' => $line);
+			
 			
 			if (preg_match("/^!/", $line)) {
 				$return_if = false;
@@ -154,7 +155,7 @@ function ngosRead8021QConfig($input)
 								$vlan = intval(trim($vlan));
 								$vlanarray[] = $vlan;
 							}
-							$ret['portdata'][$port_id] = array('mode' => $mode, 'allowed' => $vlanarray, 'native' => 1);
+							$ret['portdata'][$port_id] = array('mode' => $mode, 'allowed' => $vlanarray, 'native' => 222);
 						break;
 							case preg_match("/pvid/", $line):
 
