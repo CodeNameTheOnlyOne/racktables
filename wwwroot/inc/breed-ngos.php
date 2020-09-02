@@ -159,8 +159,7 @@ function ngosRead8021QConfig($input)
 				$return_if = false;
 				continue;
 			} else {
-				if (preg_match("/switchport/", $line)) {
-					xdebug_break();
+				if (preg_match("/switchport/", $line)) {					
 					switch (true) {
 						case preg_match("/hybrid/", $line):
 							$matches = preg_split("/\s/", trim($line));
@@ -176,12 +175,12 @@ function ngosRead8021QConfig($input)
 								$vlan = intval(trim($vlan));
 								$vlanarray[] = $vlan;
 							}
-							$ret['portdata'][$port_id][] = array('mode' => 'access', 'allowed' => $vlanarray);
+							$ret['portdata'][$port_id] = array('mode' => 'access', 'allowed' => $vlanarray);
 							break;
 						default:
 					}
 				} else {
-					$ret['portconfig'][$port_id][] = array('type' => 'line-other', 'line' => $line);
+					$ret['portconfig'][$port_id] = array('type' => 'line-other', 'line' => $line);
 				}
 			}
 		}
