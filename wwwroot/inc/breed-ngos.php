@@ -156,6 +156,7 @@ function ngosRead8021QConfig($input)
 		}
 		if ($return_if) {
 			$ret['portconfig'][$port_id][] = array('type' => 'line', 'line' => $line);
+			
 			if (preg_match("/^!/", $line)) {
 				$return_if = false;
 				continue;
@@ -181,7 +182,7 @@ function ngosRead8021QConfig($input)
 								$vlan = intval(trim($vlan));
 								$vlanarray[] = $vlan;
 							}
-							$ret['portdata'][$port_id] = array('mode' => $mode, 'allowed' => $vlanarray);
+							$ret['portdata'][$port_id] = array('mode' => $mode, 'allowed' => $vlanarray, 'native' => 1);
 						break;
 							case preg_match("/pvid/", $line):
 
