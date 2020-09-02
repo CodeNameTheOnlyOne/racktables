@@ -134,6 +134,7 @@ function ngosRead8021QConfig($input)
 			continue;
 		}
 		if ($return_vlan) {
+			if (preg_match("/^!/", $line))continue;
 			$matches = preg_split("/\s/", trim($line));
 			list($name, $vlanName) = $matches;
 			$ret['vlannames'][] = array(
